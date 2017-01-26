@@ -21,4 +21,6 @@ app.post(/.*/, function (req, res) {
 });
 app.listen(config.port);
 
+module.exports = app;
+
 // vim: ts=2:sw=2:et
