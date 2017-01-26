@@ -14,7 +14,7 @@ describe('tiny-listener', function () {
   it('should handle well-formed travis posts correctly', function (done) {
     var bodies = {};
     var config = {
-      verbose: true,
+      verbose: false,
       repos: {}
     }
     var src = 'test/fixtures/travis/correct/*.json';

@@ -2,6 +2,8 @@ var _ = require('underscore'),
     async = require('async'),
     child_process = require('child_process'),
     handlebars = require('handlebars'),
+    tempfile = require('tempfile'),
+    jsonfile = require('jsonfile'),
     express = require('express'),
     body_parser = require('body-parser');
 
@@ -18,6 +20,9 @@ function server(config) {
   var queues = {};
   _.each(config.repos, function (template, url) {
     queues[url] = async.queue(function (payload, callback) {
+      var jsonFile = tempfile('.json');
+      jsonfile.writeFileSync(jsonFile, payload);
+      payload.file = jsonFile;
       var command = handlebars.compile(template)(payload);
       if (config.verbose) {
         console.log("Running " + command);
