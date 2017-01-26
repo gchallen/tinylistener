@@ -1,5 +1,6 @@
 var _ = require('underscore'),
-    express = require('express');
+    express = require('express'),
+    body_parser = require('body-parser');
 
 function server(config) {
   var defaults = {
@@ -12,8 +13,12 @@ function server(config) {
   }
   
   this.app = express();
+  app.use(body_parser.urlencoded({extended: true}));
   app.post(/.*/, function (req, res) {
-    console.log("Here");
+    if (config.verbose) {
+      console.log(decodeURIComponent(req.body.payload));
+    }
+    res.status(200).send();
   });
   
   this.start = function() {
