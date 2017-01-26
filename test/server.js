@@ -17,14 +17,13 @@ describe('tiny-listener', function () {
       verbose: true,
       repos: {}
     }
-    var src = 'test/fixtures/travis/correct/*.js';
+    var src = 'test/fixtures/travis/correct/*.json';
     var bodies = _.map(glob.readdirSync(src, {}), function (file) {
-      var bodyPath = path.join(src, file);
-      var body = JSON.parse(fs.readFileSync(path.join(src, file)));
-      var checkPath = bodyPath.substr(0, bodyPath.lastIndexOf(".")) + ".finished";
+      var body = JSON.parse(fs.readFileSync(file));
+      var checkPath = file.substr(0, file.lastIndexOf(".")) + "." + body.commit + ".finished";
       try { fs.unlinkSync(checkPath); } catch (e) {}
       assert.notPathExists(checkPath);
-      config.repos[body.repository.url] = "touch " + checkPath;
+      config.repos[body.repository.url] = "touch " + file.substr(0, file.lastIndexOf(".")) + "." + "{{ commit }}.finished";
       return {
         body: body,
         checkPath: checkPath
@@ -43,7 +42,6 @@ describe('tiny-listener', function () {
           callback();
         });
     }, function (err) {
-
       done(err);
     });
 

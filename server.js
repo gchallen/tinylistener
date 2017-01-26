@@ -1,6 +1,7 @@
 var _ = require('underscore'),
     async = require('async'),
     child_process = require('child_process'),
+    handlebars = require('handlebars'),
     express = require('express'),
     body_parser = require('body-parser');
 
@@ -15,8 +16,12 @@ function server(config) {
   }
   
   var queues = {};
-  _.each(config.repos, function (command, name) {
-    queues[name] = async.queue(function (payload, callback) {
+  _.each(config.repos, function (template, url) {
+    queues[url] = async.queue(function (payload, callback) {
+      var command = handlebars.compile(template)(payload);
+      if (config.verbose) {
+        console.log("Running " + command);
+      }
       child_process.exec(command, function (err) {
         if (err && config.verbose) {
           console.log("Command failed: " + err);
@@ -50,7 +55,15 @@ function server(config) {
       res.status(404).send();
       return;
     }
-    queues[payload.repository.url].push(payload);
+    var normalizedInfo = {
+      commit: payload.commit,
+      branch: payload.branch,
+      message: payload.message,
+      author_name: payload.author_name,
+      author_email: payload.author_email,
+      timestamp: payload.commited_at
+    }
+    queues[payload.repository.url].push(normalizedInfo);
     res.status(200).send();
   });
   
