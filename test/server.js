@@ -5,6 +5,7 @@ var chai = require('chai'),
     path = require('path'),
     async = require('async'),
     wait_on = require('wait-on'),
+    tempfile = require('tempfile'),
     server = require('../lib/server.js');
 
 var assert = chai.assert;
@@ -91,7 +92,35 @@ describe('tiny-listener', function () {
     }, function (err) {
       done(err);
     });
-
+  });
+  it('should run startup scripts correctly', function (done) {
+    var tempfiles = {
+      "1": tempfile(),
+      "2": tempfile(),
+      "3": tempfile()
+    }
+    var repos = _.mapObject(tempfiles, function (file, key) {
+      return {
+        command: "touch " + file,
+        start: true
+      }
+    });
+    repos["3"].start = false;
+    server({ verbose: false, repos: repos});
+    var opts = _.clone(waitOpts);
+    opts.resources = _.chain(repos)
+      .pick(function (repo) {
+        return repo.start;
+      })
+      .keys()
+      .map(function (name) {
+        return tempfiles[name];
+      })
+      .value();
+    wait_on(opts, function (err) {
+      done(err);
+    });
+    assert.notPathExists(tempfiles["3"]);
   });
 });
 
