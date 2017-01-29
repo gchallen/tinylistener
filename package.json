@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/gchallen/tinylistenr",
   "dependencies": {
+    "assert": "^1.4.1",
     "async": "^2.1.4",
     "body-parser": "^1.16.0",
     "express": "^4.14.0",

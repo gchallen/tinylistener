@@ -25,7 +25,7 @@ describe('tiny-listener', function () {
       var checkPath = file.substr(0, file.lastIndexOf(".")) + "." + body.commit + ".finished";
       try { fs.unlinkSync(checkPath); } catch (e) {}
       assert.notPathExists(checkPath);
-      config.repos[body.repository.url] = {
+      config.repos[server.parseURL(body)] = {
         command: "touch " + file.substr(0, file.lastIndexOf(".")) + "." + "{{ commit }}.finished"
       }
       return {
@@ -61,12 +61,11 @@ describe('tiny-listener', function () {
     }
     var src = 'test/fixtures/github/correct/*.json';
     var bodies = _.map(glob.sync(src), function (file) {
-      console.log(file);
       var body = JSON.parse(fs.readFileSync(file));
       var checkPath = file.substr(0, file.lastIndexOf(".")) + "." + body.after + ".finished";
       try { fs.unlinkSync(checkPath); } catch (e) {}
       assert.notPathExists(checkPath);
-      config.repos[body.repository.html_url] = {
+      config.repos[server.parseURL(body)] = {
         command: "touch " + file.substr(0, file.lastIndexOf(".")) + "." + "{{ commit }}.finished"
       }
       return {
