@@ -4,7 +4,7 @@ var chai = require('chai'),
     glob = require('glob-fs')({ gitignore: true }),
     path = require('path'),
     async = require('async'),
-    server = require('../server.js');
+    server = require('../lib/server.js');
 
 var assert = chai.assert;
 chai.use(require('chai-fs'));

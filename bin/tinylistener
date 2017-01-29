@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+
+var argv = require('minimist')(process.argv.slice(2)),
+    fs = require('fs'),
+    server = require('../lib/server');
+
+server(JSON.parse(fs.readFileSync(argv._[0]))).start();
+
+// vim: ts=2:sw=2:et:ft=javascript
