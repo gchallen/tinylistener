@@ -1,22 +1,22 @@
 {
   "name": "tinylistener",
   "version": "0.0.1",
-	"author": "Geoffrey Challen <geoffrey.challen@gmail.com>",
-	"license": "MIT",
+  "author": "Geoffrey Challen <geoffrey.challen@gmail.com>",
+  "license": "MIT",
   "description": "Tiny Travis and GitHub hook listener",
-	"preferGlobal": true,
+  "preferGlobal": true,
   "main": "lib/server.js",
   "scripts": {
     "test": "mocha --reporter spec"
   },
-	"bin": {
-		"tinylistener": "./bin/tinylistener"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/gchallen/tinylistener.git"
-	},
-	"homepage": "https://github.com/gchallen/tinylistenr",
+  "bin": {
+    "tinylistener": "./bin/tinylistener"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gchallen/tinylistener.git"
+  },
+  "homepage": "https://github.com/gchallen/tinylistenr",
   "dependencies": {
     "async": "^2.1.4",
     "body-parser": "^1.16.0",
@@ -32,11 +32,12 @@
     "chai": "^3.5.0",
     "chai-fs": "^1.0.0",
     "chai-http": "^3.0.0",
-    "glob-fs": "^0.1.6",
-    "mocha": "^3.2.0"
+    "glob": "^7.1.1",
+    "mocha": "^3.2.0",
+    "wait-on": "^2.0.1"
   },
-	"files": [
-		"bin",
-		"lib"
-	]
+  "files": [
+    "bin",
+    "lib"
+  ]
 }

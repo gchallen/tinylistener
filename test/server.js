@@ -1,15 +1,17 @@
 var chai = require('chai'),
     _ = require('underscore'),
     fs = require('fs'),
-    glob = require('glob-fs')({ gitignore: true }),
+    glob = require('glob'),
     path = require('path'),
     async = require('async'),
+    wait_on = require('wait-on'),
     server = require('../lib/server.js');
 
 var assert = chai.assert;
 chai.use(require('chai-fs'));
 chai.use(require('chai-http'));
 
+var waitOpts = { interval: 100, timeout: 1000, window: 0 };
 describe('tiny-listener', function () {
   it('should handle well-formed Travis posts correctly', function (done) {
     var bodies = {};
@@ -18,7 +20,7 @@ describe('tiny-listener', function () {
       repos: {}
     }
     var src = 'test/fixtures/travis/correct/*.json';
-    var bodies = _.map(glob.readdirSync(src, {}), function (file) {
+    var bodies = _.map(glob.sync(src), function (file) {
       var body = JSON.parse(fs.readFileSync(file));
       var checkPath = file.substr(0, file.lastIndexOf(".")) + "." + body.commit + ".finished";
       try { fs.unlinkSync(checkPath); } catch (e) {}
@@ -38,8 +40,11 @@ describe('tiny-listener', function () {
         })
         .end(function (err, res) {
           assert.equal(res.status, 200);
-          assert.pathExists(body.checkPath);
-          callback();
+          var opts = _.clone(waitOpts);
+          opts.resources = [ body.checkPath ];
+          wait_on(opts, function (err) {
+            callback(err);
+          });
         });
     }, function (err) {
       done(err);
@@ -49,11 +54,12 @@ describe('tiny-listener', function () {
   it('should handle well-formed GitHub posts correctly', function (done) {
     var bodies = {};
     var config = {
-      verbose: true,
+      verbose: false,
       repos: {}
     }
     var src = 'test/fixtures/github/correct/*.json';
-    var bodies = _.map(glob.readdirSync(src, {}), function (file) {
+    var bodies = _.map(glob.sync(src), function (file) {
+      console.log(file);
       var body = JSON.parse(fs.readFileSync(file));
       var checkPath = file.substr(0, file.lastIndexOf(".")) + "." + body.after + ".finished";
       try { fs.unlinkSync(checkPath); } catch (e) {}
@@ -73,8 +79,11 @@ describe('tiny-listener', function () {
         })
         .end(function (err, res) {
           assert.equal(res.status, 200);
-          assert.pathExists(body.checkPath);
-          callback();
+          var opts = _.clone(waitOpts);
+          opts.resources = [ body.checkPath ];
+          wait_on(opts, function (err) {
+            callback(err);
+          });
         });
     }, function (err) {
       done(err);
