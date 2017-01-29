@@ -7,7 +7,7 @@
 	"preferGlobal": true,
   "main": "lib/server.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha --reporter spec"
+    "test": "mocha --reporter spec"
   },
 	"bin": {
 		"tinylistener": "./bin/tinylistener"
